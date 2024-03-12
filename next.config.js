@@ -4,6 +4,7 @@ const withNextCircularDeps = require('next-circular-dependency');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   reactStrictMode: true,
   productionBrowserSourceMaps: true,
   exclude: /a\.js|node_modules/, // exclude node_modules for checking circular dependencies
