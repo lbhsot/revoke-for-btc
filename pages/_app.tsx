@@ -6,6 +6,7 @@ import { EthereumProvider } from 'lib/hooks/ethereum/EthereumProvider';
 import { ColorThemeProvider } from 'lib/hooks/useColorTheme';
 import { init, track } from 'lib/utils/analytics';
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
 import React, { useEffect } from 'react';
@@ -39,6 +40,9 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   return (
     <>
+      <Head>
+        <meta name="google-site-verification" content="NtrQzpgGWOjFnHCvseZ6_iviJf3HHevrKhYe-ljgJKI" />
+      </Head>
       <QueryProvider>
         <EthereumProvider>
           <ColorThemeProvider>
