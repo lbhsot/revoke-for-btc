@@ -38,7 +38,9 @@ export const usePublicClient = (params?: { chainId?: number }) => {
     return createPublicClient({
       chain,
       transport: http(
-        `${rpcDomain}/evm-chain?chainId=${chain.id}&projectUuid=${process.env.NEXT_PUBLIC_PARTICAL_PROJECT_ID}&projectKey=${process.env.NEXT_PUBLIC_PARTICAL_CLIENT_KEY}`,
+        `${rpcDomain}/evm-chain?chainId=${params?.chainId || chain?.id}&projectUuid=${
+          process.env.NEXT_PUBLIC_PARTICAL_PROJECT_ID
+        }&projectKey=${process.env.NEXT_PUBLIC_PARTICAL_CLIENT_KEY}`,
       ),
     });
   }, [chain, publicClient]);
