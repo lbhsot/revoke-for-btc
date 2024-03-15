@@ -22,7 +22,7 @@ export const useWalletClient = () => {
 
 export const usePublicClient = (params?: { chainId?: number }) => {
   const evmPublicClient = useBasePublicClient();
-  const { publicClient } = useETHProvider();
+  const { publicClient, provider } = useETHProvider();
   const { chain: connectedChain, isBtcWallet } = useConnectInfo();
   const chain = useMemo(() => {
     if (params?.chainId) {
@@ -31,11 +31,15 @@ export const usePublicClient = (params?: { chainId?: number }) => {
     return connectedChain;
   }, [params?.chainId, connectedChain]);
   const btcPublicClient = useMemo(() => {
-    if (!publicClient) return undefined;
+    let rpcDomain = 'https://rpc.particle.network';
+    // if (typeof window !== 'undefined' && (window as any).__PARTICLE_ENVIRONMENT__ === 'development') {
+    //   rpcDomain = 'https://rpc-debug.particle.network';
+    // }
     return createPublicClient({
       chain,
-      // @ts-ignore
-      transport: publicClient.transport,
+      transport: http(
+        `${rpcDomain}/evm-chain?chainId=${chain.id}&projectUuid=${process.env.NEXT_PUBLIC_PARTICAL_PROJECT_ID}&projectKey=${process.env.NEXT_PUBLIC_PARTICAL_CLIENT_KEY}`,
+      ),
     });
   }, [chain, publicClient]);
   return useMemo(() => {
