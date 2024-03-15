@@ -3,7 +3,8 @@ import { getChainName } from 'lib/utils/chains';
 import Trans from 'next-translate/Trans';
 import useTranslation from 'next-translate/useTranslation';
 import { ReactElement } from 'react';
-import { useAccount, useNetwork } from 'wagmi';
+import { useAccount } from 'wagmi';
+import { useConnectInfo } from '../../../lib/hooks/wallet/useConnectInfo';
 import SwitchChainButton from './SwitchChainButton';
 
 interface Props {
@@ -17,15 +18,15 @@ interface Props {
 
 const ControlsWrapper = ({ chainId, address, switchChainSize, children, overrideDisabled, disabledReason }: Props) => {
   const { t } = useTranslation();
-  const { address: account, connector } = useAccount();
-  const { chain } = useNetwork();
+  const { connector } = useAccount();
+  const { chainId: currentChainId, account, isBtcWallet, btcEvmAccount } = useConnectInfo();
 
   const chainName = getChainName(chainId);
 
   const isConnected = !!account;
-  const isConnectedAddress = isConnected && address === account;
-  const needsToSwitchChain = isConnected && chainId !== chain?.id;
-  const canSwitchChain = connector?.id === 'injected';
+  const isConnectedAddress = isConnected && (isBtcWallet ? address === btcEvmAccount : address === account);
+  const needsToSwitchChain = isConnected && chainId !== currentChainId;
+  const canSwitchChain = isBtcWallet ? true : connector?.id === 'injected';
   const isChainSwitchEnabled = switchChainSize !== undefined;
   const shouldRenderSwitchChainButton = needsToSwitchChain && canSwitchChain && isChainSwitchEnabled;
   const disabled = !isConnectedAddress || (needsToSwitchChain && !shouldRenderSwitchChainButton) || overrideDisabled;

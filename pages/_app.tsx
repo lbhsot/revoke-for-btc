@@ -28,6 +28,13 @@ timeago.register('zh', timeagoZh);
 // suppress useLayoutEffect warnings when running outside a browser
 if (typeof window === 'undefined') React.useLayoutEffect = React.useEffect;
 
+// Optional, may be needed depending on your environment.
+import('buffer').then(({ Buffer }) => {
+  if (typeof window !== 'undefined') {
+    window.Buffer = Buffer;
+  }
+});
+
 init();
 
 const App = ({ Component, pageProps }: AppProps) => {

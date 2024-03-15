@@ -2,7 +2,7 @@ import { useAddressPageContext } from 'lib/hooks/page-context/AddressPageContext
 import { Marketplace, OnCancel } from 'lib/interfaces';
 import { getLogTimestamp, waitForTransactionConfirmation } from 'lib/utils';
 import { track } from 'lib/utils/analytics';
-import { usePublicClient, useWalletClient } from 'wagmi';
+import { usePublicClient, useWalletClient } from '../../../lib/hooks/wallet/useWalletClient';
 import CancelCell from './CancelCell';
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 }
 
 const CancelMarketplaceCell = ({ marketplace, onCancel }: Props) => {
-  const { data: walletClient } = useWalletClient();
+  const walletClient = useWalletClient();
   const publicClient = usePublicClient();
   const { address, selectedChainId } = useAddressPageContext();
 

@@ -1,12 +1,13 @@
 import { getViemChainConfig, ORDERED_CHAINS } from 'lib/utils/chains';
 import { SECOND } from 'lib/utils/time';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useMemo } from 'react';
 import { configureChains, createConfig, useAccount, useConnect, WagmiConfig } from 'wagmi';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 // import { LedgerConnector } from 'wagmi/connectors/ledger';
+import { BitgetConnector, ConnectProvider, OKXConnector, UnisatConnector } from '@particle-network/btc-connectkit';
+import { Merlin, MerlinTestnet } from '@particle-network/chains';
 import { SafeConnector } from 'wagmi/connectors/safe';
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { publicProvider } from 'wagmi/providers/public';
 
 interface Props {
@@ -33,22 +34,22 @@ export const connectors = [
   }),
   new InjectedConnectorNoDisconnectListener({ chains: wagmiChains }),
   new InjectedConnectorNoDisconnectListener({ chains: wagmiChains, options: { name: 'Browser Wallet' } }),
-  new WalletConnectConnector({
-    chains: wagmiChains,
-    options: {
-      projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
-      metadata: {
-        name: 'Revoke.cash',
-        description:
-          'Take back control of your wallet and stay safe by revoking token approvals and permissions you granted on Ethereum and over 70 other networks.',
-        url: 'https://revoke.cash',
-        icons: [
-          'https://revoke.cash/assets/images/revoke-icon.svg',
-          'https://revoke.cash/assets/images/apple-touch-icon.png',
-        ],
-      },
-    },
-  }),
+  // new WalletConnectConnector({
+  //   chains: wagmiChains,
+  //   options: {
+  //     projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
+  //     metadata: {
+  //       name: 'Revoke.cash',
+  //       description:
+  //         'Take back control of your wallet and stay safe by revoking token approvals and permissions you granted on Ethereum and over 70 other networks.',
+  //       url: 'https://revoke.cash',
+  //       icons: [
+  //         'https://revoke.cash/assets/images/revoke-icon.svg',
+  //         'https://revoke.cash/assets/images/apple-touch-icon.png',
+  //       ],
+  //     },
+  //   },
+  // }),
   new CoinbaseWalletConnector({ chains: wagmiChains, options: { appName: 'Revoke.cash' } }),
   // new LedgerConnector({
   //   chains: wagmiChains,
@@ -63,10 +64,36 @@ export const wagmiConfig = createConfig({
 });
 
 export const EthereumProvider = ({ children }: Props) => {
+  const unisatConnector = useMemo(() => new UnisatConnector(), []);
+  const okxConnector = useMemo(() => new OKXConnector(), []);
+  const bitgetConnector = useMemo(() => new BitgetConnector(), []);
   return (
-    <WagmiConfig config={wagmiConfig}>
-      <EthereumProviderChild>{children}</EthereumProviderChild>
-    </WagmiConfig>
+    <ConnectProvider
+      options={{
+        projectId: process.env.NEXT_PUBLIC_PARTICAL_PROJECT_ID, // ---
+        clientKey: process.env.NEXT_PUBLIC_PARTICAL_CLIENT_KEY, // Retrieved from https://dashboard.particle.network
+        appId: process.env.NEXT_PUBLIC_PARTICAL_APP_ID, // ---
+        aaOptions: {
+          accountContracts: {
+            BTC: [
+              {
+                chainIds: [Merlin.id, MerlinTestnet.id], // The chain you'd like to use, Merlin in this case.
+                version: '1.0.0', // Keep this as 1.0.0 for now.
+              },
+            ],
+          },
+        },
+        walletOptions: {
+          visible: true, // Whether or not the embedded wallet modal (for controlling the smart account) is shown.
+        },
+      }}
+      // List of supported wallets.
+      connectors={[unisatConnector, okxConnector, bitgetConnector]}
+    >
+      <WagmiConfig config={wagmiConfig}>
+        <EthereumProviderChild>{children}</EthereumProviderChild>
+      </WagmiConfig>
+    </ConnectProvider>
   );
 };
 

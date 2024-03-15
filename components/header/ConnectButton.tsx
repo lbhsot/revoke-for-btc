@@ -1,4 +1,5 @@
 import { Dialog } from '@headlessui/react';
+import { useBTCProvider, useConnectModal } from '@particle-network/btc-connectkit';
 import Button from 'components/common/Button';
 import Logo from 'components/common/Logo';
 import Modal from 'components/common/Modal';
@@ -6,7 +7,7 @@ import { deduplicateArray } from 'lib/utils';
 import { getConnectorName, getWalletIcon } from 'lib/utils/wallet';
 import useTranslation from 'next-translate/useTranslation';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Connector, useAccount, useConnect } from 'wagmi';
 
 interface Props {
@@ -35,6 +36,15 @@ const ConnectButton = ({ size, style, className, text, redirect }: Props) => {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const { openConnectModal } = useConnectModal();
+  const { accounts } = useBTCProvider();
+
+  useEffect(() => {
+    if (accounts.length > 0) {
+      handleClose();
+    }
+  }, [accounts]);
 
   const connectAndRedirect = async (connector: Connector) => {
     handleClose();
@@ -83,6 +93,18 @@ const ConnectButton = ({ size, style, className, text, redirect }: Props) => {
                     {getConnectorName(connector)}
                   </Button>
                 ))}
+              <Button
+                style="secondary"
+                size="none"
+                className="flex justify-start items-center gap-2 p-2 border border-black rounded-lg w-full text-lg"
+                onClick={() => {
+                  if (!accounts.length) {
+                    openConnectModal();
+                  }
+                }}
+              >
+                Connect BTC Wallet
+              </Button>
             </div>
           </div>
         </div>

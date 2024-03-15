@@ -4,7 +4,7 @@ import { useNameLookup } from 'lib/hooks/ethereum/useNameLookup';
 import { useAddressPageContext } from 'lib/hooks/page-context/AddressPageContext';
 import { useMounted } from 'lib/hooks/useMounted';
 import { getNativeTokenPrice } from 'lib/price/utils';
-import { usePublicClient } from 'wagmi';
+import { usePublicClient } from '../../lib/hooks/wallet/useWalletClient';
 import AddressDisplay from './AddressDisplay';
 import AddressSocialShareButtons from './AddressSocialShareButtons';
 import BalanceDisplay from './BalanceDisplay';

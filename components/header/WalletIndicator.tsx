@@ -1,5 +1,5 @@
 import { useMounted } from 'lib/hooks/useMounted';
-import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
+import { useConnectInfo } from '../../lib/hooks/wallet/useConnectInfo';
 import ChainSelect from '../common/select/ChainSelect';
 import WalletIndicatorDropdown from './WalletIndicatorDropdown';
 
@@ -12,22 +12,20 @@ interface Props {
 
 const WalletIndicator = ({ menuAlign, size, style, className }: Props) => {
   const isMounted = useMounted();
-  const { address: account } = useAccount();
-  const { switchNetwork } = useSwitchNetwork();
-  const { chain } = useNetwork();
+  const { account, switchNetwork, chainId } = useConnectInfo();
 
   if (!isMounted) return null;
 
   return (
     <div className="flex gap-2">
-      {account && chain && (
+      {account && chainId ? (
         <ChainSelect
           instanceId="global-chain-select"
           onSelect={switchNetwork}
-          selected={chain.id}
+          selected={chainId}
           menuAlign={menuAlign}
         />
-      )}
+      ) : null}
       <WalletIndicatorDropdown size={size} style={style} className={className} />
     </div>
   );

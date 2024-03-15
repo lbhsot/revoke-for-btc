@@ -6,7 +6,7 @@ import { getLogTimestamp, waitForTransactionConfirmation } from 'lib/utils';
 import { track } from 'lib/utils/analytics';
 import { permit } from 'lib/utils/permit';
 import { isErc721Contract } from 'lib/utils/tokens';
-import { usePublicClient, useWalletClient } from 'wagmi';
+import { usePublicClient, useWalletClient } from '../../../lib/hooks/wallet/useWalletClient';
 import CancelCell from './CancelCell';
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
 }
 
 const CancelPermitCell = ({ token, onCancel }: Props) => {
-  const { data: walletClient } = useWalletClient();
+  const walletClient = useWalletClient();
   const publicClient = usePublicClient();
   const { address, selectedChainId } = useAddressPageContext();
   const handleTransaction = useHandleTransaction();

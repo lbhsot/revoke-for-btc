@@ -2,7 +2,7 @@ import DropdownMenu, { DropdownMenuItem } from 'components/common/DropdownMenu';
 import { useNameLookup } from 'lib/hooks/ethereum/useNameLookup';
 import { shortenAddress } from 'lib/utils/formatting';
 import useTranslation from 'next-translate/useTranslation';
-import { useAccount, useDisconnect } from 'wagmi';
+import { useConnectInfo } from '../../lib/hooks/wallet/useConnectInfo';
 import ConnectButton from './ConnectButton';
 
 interface Props {
@@ -13,17 +13,17 @@ interface Props {
 
 const WalletIndicatorDropdown = ({ size, style, className }: Props) => {
   const { t } = useTranslation();
-  const { address: account } = useAccount();
-  const { ensName, unsName, avvyName } = useNameLookup(account);
-  const { disconnect } = useDisconnect();
+  const { account, btcEvmAccount, disconnect, isBtcWallet } = useConnectInfo();
+  const { ensName, unsName, avvyName } = useNameLookup(isBtcWallet ? (account as `0x${string}`) : undefined);
   const domainName = ensName ?? unsName ?? avvyName;
 
   return (
     <div className="flex whitespace-nowrap">
       {account ? (
         <DropdownMenu menuButton={domainName ?? shortenAddress(account, 4)}>
-          <DropdownMenuItem href={`/address/${account}`} router>
-            {t('common:buttons.my_allowances')}
+          <DropdownMenuItem href={`/address/${isBtcWallet ? btcEvmAccount : account}`} router>
+            {isBtcWallet ? 'Smart Wallet Allowance: ' : t('common:buttons.my_allowances')}
+            {isBtcWallet ? shortenAddress(btcEvmAccount, 4) : null}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => disconnect()}>{t('common:buttons.disconnect')}</DropdownMenuItem>
         </DropdownMenu>

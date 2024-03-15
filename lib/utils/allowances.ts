@@ -24,7 +24,7 @@ import {
 import { isNetworkError, parseErrorMessage } from './errors';
 import { formatFixedPointBigInt } from './formatting';
 import { getPermit2AllowancesFromApprovals } from './permit2';
-import { createTokenContracts, getTokenData, hasZeroBalance, isErc721Contract } from './tokens';
+import { createTokenContracts, getTokenData, isErc721Contract } from './tokens';
 
 export const getAllowancesFromEvents = async (
   owner: Address,
@@ -73,11 +73,13 @@ export const getAllowancesFromEvents = async (
   );
 
   // Filter out any zero-balance + zero-allowance tokens
-  return allowances
-    .flat()
-    .filter((allowance) => allowance.spender || allowance.balance !== 'ERC1155')
-    .filter((allowance) => allowance.spender || !hasZeroBalance(allowance.balance, allowance.metadata.decimals))
-    .sort((a, b) => a.metadata.symbol.localeCompare(b.metadata.symbol));
+  return (
+    allowances
+      .flat()
+      // .filter((allowance) => allowance.spender || allowance.balance !== 'ERC1155')
+      // .filter((allowance) => allowance.spender || !hasZeroBalance(allowance.balance, allowance.metadata.decimals))
+      .sort((a, b) => a.metadata.symbol.localeCompare(b.metadata.symbol))
+  );
 };
 
 export const getAllowancesForToken = async (

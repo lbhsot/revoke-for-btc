@@ -3,9 +3,9 @@ import { useRouter } from 'next/router';
 import React, { ReactNode, useContext, useEffect, useState } from 'react';
 import useLocalStorage from 'use-local-storage';
 import { Address } from 'viem';
-import { useNetwork } from 'wagmi';
 import { useEvents } from '../ethereum/events/useEvents';
 import { useAllowances } from '../ethereum/useAllowances';
+import { useConnectInfo } from '../wallet/useConnectInfo';
 
 interface AddressContext {
   address?: Address;
@@ -27,12 +27,18 @@ const AddressPageContext = React.createContext<AddressContext>({});
 
 export const AddressPageContextProvider = ({ children, address, initialChainId }: Props) => {
   const router = useRouter();
-  const { chain } = useNetwork();
+  const { chain } = useConnectInfo();
 
   // The default selected chain ID is either the chainId query parameter, the connected chain ID, or 1 (Ethereum)
   const queryChainId = parseInt(router.query.chainId as string);
   const defaultChainId = [initialChainId, queryChainId, chain?.id, 1].find((chainId) => isSupportedChain(chainId));
   const [selectedChainId, selectChain] = useState<number>(defaultChainId);
+  useEffect(() => {
+    if (router.query.chainId) return;
+    if (selectedChainId) return;
+    if (!defaultChainId) return;
+    selectChain(defaultChainId);
+  }, [router.query.chainId, selectedChainId, defaultChainId]);
 
   useEffect(() => {
     if (!router.query.chainId) {

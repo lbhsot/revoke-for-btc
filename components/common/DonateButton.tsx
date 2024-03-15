@@ -4,14 +4,15 @@ import Modal from 'components/common/Modal';
 import { DONATION_ADDRESS } from 'lib/constants';
 import { getWalletAddress } from 'lib/utils';
 import { track } from 'lib/utils/analytics';
-import { getChainNativeToken, getDefaultDonationAmount } from 'lib/utils/chains';
+import { getChainById, getChainNativeToken, getDefaultDonationAmount } from 'lib/utils/chains';
 import useTranslation from 'next-translate/useTranslation';
 import type { MutableRefObject, ReactText } from 'react';
 import { useEffect, useState } from 'react';
 import { useAsyncCallback } from 'react-async-hook';
 import { toast } from 'react-toastify';
 import { parseEther } from 'viem';
-import { useNetwork, useWalletClient } from 'wagmi';
+import { useConnectInfo } from '../../lib/hooks/wallet/useConnectInfo';
+import { useWalletClient } from '../../lib/hooks/wallet/useWalletClient';
 import Input from './Input';
 
 interface Props {
@@ -23,10 +24,10 @@ interface Props {
 
 const DonateButton = ({ size, style, className, parentToastRef }: Props) => {
   const { t } = useTranslation();
-  const { chain } = useNetwork();
-  const { data: walletClient } = useWalletClient();
+  const { chainId } = useConnectInfo();
+  const walletClient = useWalletClient();
 
-  const nativeToken = getChainNativeToken(chain?.id);
+  const nativeToken = getChainNativeToken(chainId);
   const [amount, setAmount] = useState<string>(getDefaultDonationAmount(nativeToken));
 
   const [open, setOpen] = useState(false);
@@ -48,7 +49,7 @@ const DonateButton = ({ size, style, className, parentToastRef }: Props) => {
   }, [nativeToken]);
 
   const sendDonation = async () => {
-    if (!walletClient || !chain?.id) {
+    if (!walletClient || !chainId) {
       alert('Please connect your web3 wallet to donate');
     }
 
@@ -57,12 +58,12 @@ const DonateButton = ({ size, style, className, parentToastRef }: Props) => {
         account: await getWalletAddress(walletClient),
         to: DONATION_ADDRESS,
         value: parseEther(amount),
-        chain: chain,
+        chain: getChainById(chainId),
       });
 
       toast.info(t('common:toasts.donation_sent'));
 
-      track('Donated', { chainId: chain?.id, amount: Number(amount) });
+      track('Donated', { chainId: chainId, amount: Number(amount) });
 
       handleClose();
     } catch (err) {

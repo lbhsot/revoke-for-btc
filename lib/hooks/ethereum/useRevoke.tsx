@@ -7,11 +7,12 @@ import { isRevertedError, parseErrorMessage } from 'lib/utils/errors';
 import { parseFixedPointBigInt } from 'lib/utils/formatting';
 import { permit2Approve } from 'lib/utils/permit2';
 import { isErc721Contract } from 'lib/utils/tokens';
-import { useAccount, useWalletClient } from 'wagmi';
+import { useAccount } from 'wagmi';
+import { useWalletClient } from '../wallet/useWalletClient';
 import { useHandleTransaction } from './useHandleTransaction';
 
 export const useRevoke = (allowance: AllowanceData, onUpdate: OnUpdate) => {
-  const { data: walletClient } = useWalletClient();
+  const walletClient = useWalletClient();
   const { address: account } = useAccount();
   const handleTransaction = useHandleTransaction();
 
