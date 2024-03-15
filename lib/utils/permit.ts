@@ -63,7 +63,7 @@ export const permit = async (
 
 export const getPermitDomain = async (contract: Erc20TokenContract): Promise<TypedDataDomain> => {
   const verifyingContract = contract.address;
-  const chainId = contract.publicClient.chain.id;
+  const chainId = contract.publicClient.chain?.id;
 
   const [version, name, symbol, contractDomainSeparator] = await Promise.all([
     getPermitDomainVersion(contract),

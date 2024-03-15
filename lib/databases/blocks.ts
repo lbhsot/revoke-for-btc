@@ -19,7 +19,7 @@ class BlocksDB extends Dexie {
 
   async getBlockTimestamp(publicClient: PublicClient, blockNumber: number): Promise<number> {
     try {
-      const chainId = publicClient.chain.id;
+      const chainId = publicClient.chain?.id;
       const storedBlock = await this.blocks.get([chainId, blockNumber]);
       if (storedBlock) return storedBlock.timestamp;
 

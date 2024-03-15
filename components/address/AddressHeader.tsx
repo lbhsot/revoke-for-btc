@@ -24,8 +24,8 @@ const AddressHeader = () => {
   });
 
   const { data: nativeAssetPrice, isLoading: nativeAssetPriceIsLoading } = useQuery({
-    queryKey: ['nativeAssetPrice', publicClient.chain.id],
-    queryFn: () => getNativeTokenPrice(publicClient.chain.id, publicClient),
+    queryKey: ['nativeAssetPrice', publicClient.chain?.id],
+    queryFn: () => getNativeTokenPrice(publicClient.chain?.id, publicClient),
     enabled: !!publicClient,
   });
 
