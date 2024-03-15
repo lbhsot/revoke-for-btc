@@ -1,3 +1,4 @@
+import { useETHProvider } from '@particle-network/btc-connectkit';
 import { useMemo } from 'react';
 import { createPublicClient, createWalletClient, custom, http } from 'viem';
 import { usePublicClient as useBasePublicClient, useWalletClient as useBaseWalletClient } from 'wagmi';
@@ -21,6 +22,7 @@ export const useWalletClient = () => {
 
 export const usePublicClient = (params?: { chainId?: number }) => {
   const evmPublicClient = useBasePublicClient();
+  const { publicClient } = useETHProvider();
   const { chain: connectedChain, isBtcWallet } = useConnectInfo();
   const chain = useMemo(() => {
     if (params?.chainId) {
@@ -29,11 +31,13 @@ export const usePublicClient = (params?: { chainId?: number }) => {
     return connectedChain;
   }, [params?.chainId, connectedChain]);
   const btcPublicClient = useMemo(() => {
+    if (!publicClient) return undefined;
     return createPublicClient({
       chain,
-      transport: http(),
+      // @ts-ignore
+      transport: publicClient.transport,
     });
-  }, [chain]);
+  }, [chain, publicClient]);
   return useMemo(() => {
     return isBtcWallet ? btcPublicClient : evmPublicClient;
   }, [isBtcWallet, btcPublicClient, evmPublicClient]);
