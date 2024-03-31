@@ -467,8 +467,8 @@ export const getChainExplorerUrl = (chainId: number): string | undefined => {
     // [ChainId.KardiaChainMainnet]: 'https://explorer.kardiachain.io',
     // [ChainId.Linea]: 'https://lineascan.build',
     // [ChainId.LineaTestnet]: 'https://goerli.lineascan.build',
-    [ChainId.MerlinMainnet]: 'https://scan.merlinchain.io',
-    [686868]: 'https://testnet-scan.merlinchain.io',
+    [ChainId.MerlinMainnet]: 'https://scan-v1.merlinchain.io',
+    [686868]: 'https://testnet-scan-v1.merlinchain.io',
     // [ChainId.OasysMainnet]: 'https://scan.oasys.games',
     // [ChainId.Palm]: 'https://www.ondora.xyz/network/palm',
     // [ChainId.PolygonzkEVM]: 'https://zkevm.polygonscan.com',
@@ -867,8 +867,8 @@ export const getChainApiUrl = (chainId: number): string | undefined => {
     // [ChainId.Mantle]: 'https://explorer.mantle.xyz/api',
     // [ChainId.MantleTestnet]: 'https://explorer.testnet.mantle.xyz/api',
     // [ChainId.MaxxChainMainnet]: 'https://explorer.maxxchain.org/api',
-    [ChainId.MerlinMainnet]: 'https://scan.merlinchain.io/api',
-    [686868]: 'https://testnet-scan.merlinchain.io/api',
+    [ChainId.MerlinMainnet]: 'https://scan-v1.merlinchain.io/api',
+    [686868]: 'https://testnet-scan-v1.merlinchain.io/api',
     // [ChainId.MilkomedaC1Mainnet]: 'https://explorer-mainnet-cardano-evm.c1.milkomeda.com/api',
     // [ChainId.Moonbeam]: 'https://api-moonbeam.moonscan.io/api',
     // [ChainId.Moonriver]: 'https://api-moonriver.moonscan.io/api',
@@ -1895,13 +1895,13 @@ export const merlin = /*#__PURE__*/ defineChain({
   blockExplorers: {
     default: {
       name: 'blockscout',
-      url: 'https://scan.merlinchain.io',
-      apiUrl: 'https://scan.merlinchain.io/api',
+      url: 'https://scan-v1.merlinchain.io',
+      apiUrl: 'https://scan-v1.merlinchain.io/api',
     },
     etherscan: {
       name: 'blockscout',
-      url: 'https://scan.merlinchain.io',
-      apiUrl: 'https://scan.merlinchain.io/api',
+      url: 'https://scan-v1.merlinchain.io',
+      apiUrl: 'https://scan-v1.merlinchain.io/api',
     },
   },
 });
@@ -1922,13 +1922,13 @@ export const merlinTestnet = /*#__PURE__*/ defineChain({
   blockExplorers: {
     default: {
       name: 'blockscout',
-      url: 'https://testnet-scan.merlinchain.io',
-      apiUrl: 'https://testnet-scan.merlinchain.io//api',
+      url: 'https://testnet-scan-v1.merlinchain.io',
+      apiUrl: 'https://testnet-scan-v1.merlinchain.io//api',
     },
     etherscan: {
       name: 'blockscout',
-      url: 'https://testnet-scan.merlinchain.io',
-      apiUrl: 'https://testnet-scan.merlinchain.io//api',
+      url: 'https://testnet-scan-v1.merlinchain.io',
+      apiUrl: 'https://testnet-scan-v1.merlinchain.io//api',
     },
   },
 });
